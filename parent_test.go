@@ -10,7 +10,10 @@ import (
 // Test_parentNamespace_Path tests the PARENT.Path function returns parent DIR path
 // Test_parentNamespace_Path 测试 PARENT.Path 函数返回父 DIR 路径
 func Test_parentNamespace_Path(t *testing.T) {
-	t.Log(PARENT.Path())
+	path := PARENT.Path()
+	t.Log(path)
+	require.True(t, filepath.IsAbs(path))
+	require.Equal(t, "runpath", filepath.Base(path))
 }
 
 // Test_parentNamespace_Name tests the PARENT.Name function returns parent DIR name
@@ -24,13 +27,18 @@ func Test_parentNamespace_Name(t *testing.T) {
 // Test_parentNamespace_Skip tests the PARENT.Skip function with different skip depths
 // Test_parentNamespace_Skip 测试 PARENT.Skip 函数使用不同的跳过深度
 func Test_parentNamespace_Skip(t *testing.T) {
-	t.Log(PARENT.Skip(0))
+	path := PARENT.Skip(0)
+	t.Log(path)
+	require.Equal(t, PARENT.Path(), path)
 }
 
 // Test_parentNamespace_Join tests the PARENT.Join function joins paths with parent DIR
 // Test_parentNamespace_Join 测试 PARENT.Join 函数与父 DIR 连接路径
 func Test_parentNamespace_Join(t *testing.T) {
-	t.Log(PARENT.Join("example.json"))
+	path := PARENT.Join("example.json")
+	t.Log(path)
+	want := filepath.Join(PARENT.Path(), "example.json")
+	require.Equal(t, want, path)
 }
 
 // Test_parentNamespace_Join1 tests constructing paths using DIR.Path and filepath.Join
@@ -38,7 +46,7 @@ func Test_parentNamespace_Join(t *testing.T) {
 func Test_parentNamespace_Join1(t *testing.T) {
 	name := Name()
 	t.Log(name)
-	root := DIR.Path() // Variable named "root" for clean code aesthetics // 变量名为 "root" 保持代码美学
+	root := DIR.Path() // Named "root" to match the package naming convention // 变量名为 "root" 保持代码美学
 	t.Log(root)
 	path := filepath.Join(root, name)
 	t.Log(path)
