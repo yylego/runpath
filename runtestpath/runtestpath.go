@@ -24,49 +24,31 @@ import (
 // If the test file is abc_test.go, returns /aa/bb/cc/abc.go
 // Maps from test file to the source file being tested
 //
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
 // SrcPath 返回与测试文件对应的源文件路径
 // 如果测试文件是 abc_test.go，返回 /aa/bb/cc/abc.go
 // 从测试文件映射到被测试的源文件
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcPath(t *testing.T) string {
-	_, path, _, ok := runtime.Caller(1)
-	require.True(t, ok)
-	require.True(t, strings.HasSuffix(path, "_test.go"))
-	return path[:len(path)-len("_test.go")] + ".go"
+	return SrcSkip(t, 1)
 }
 
 // SrcName returns the source file name corresponding to the test file
 // If the test file is abc_test.go, returns abc.go
 // Gets just the filename of the source file being tested
 //
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
 // SrcName 返回与测试文件对应的源文件名
 // 如果测试文件是 abc_test.go，返回 abc.go
 // 仅获取被测试源文件的文件名
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcName(t *testing.T) string {
-	_, path, _, ok := runtime.Caller(1)
-	require.True(t, ok)
-	require.True(t, strings.HasSuffix(path, "_test.go"))
-	return filepath.Base(path[:len(path)-len("_test.go")] + ".go")
+	return filepath.Base(SrcSkip(t, 1))
 }
 
 // SrcSkip returns source file path with specified frame skip count
 // Has limited use cases beyond the above two scenarios
 // Exported in case there are outside uses
 //
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
 // SrcSkip 返回指定调用帧跳过的源文件路径
 // 目前除了上述两个场景外使用场景有限
 // 导出以防有其他外部用途
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcSkip(t *testing.T, skip int) string {
 	_, path, _, ok := runtime.Caller(1 + skip)           // +1 to account this function frame // 这里又调用了一层因此这里得补1次
 	require.True(t, ok)                                  // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
@@ -78,75 +60,40 @@ func SrcSkip(t *testing.T, skip int) string {
 // If the test file is abc_test.go and ".json" is passed, returns /aa/bb/cc/abc.json
 // Gets config files with same name as the source file being tested
 //
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
 // SrcPathChangeExtension 从测试上下文中更改源文件扩展名
 // 如果测试文件是 abc_test.go 且传递 ".json"，返回 /aa/bb/cc/abc.json
 // 获取与被测试源文件同名的配置文件
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcPathChangeExtension(t *testing.T, pointExtension string) string {
-	_, path, _, ok := runtime.Caller(1)
-	require.True(t, ok)
-	require.True(t, strings.HasSuffix(path, "_test.go"))
-	return path[:len(path)-len("_test.go")] + pointExtension
+	return SrcSkipRemoveExtension(t, 1) + pointExtension
 }
 
 // SrcRex is a concise alias of SrcPathChangeExtension
 // Changes source file extension with new one from test context
 //
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
 // SrcRex 是 SrcPathChangeExtension 的简短别名
 // 从测试上下文中更改源文件扩展名
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcRex(t *testing.T, pointExtension string) string {
-	_, path, _, ok := runtime.Caller(1)
-	require.True(t, ok)
-	require.True(t, strings.HasSuffix(path, "_test.go"))
-	return path[:len(path)-len("_test.go")] + pointExtension
+	return SrcSkipRemoveExtension(t, 1) + pointExtension
 }
 
 // SrcNox returns source file path without extension from test context
 // Removes extension from the source file corresponding to test file
 //
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
 // SrcNox 从测试上下文中返回不带扩展名的源文件路径
 // 从与测试文件对应的源文件中移除扩展名
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcNox(t *testing.T) string {
-	_, path, _, ok := runtime.Caller(1)
-	require.True(t, ok)
-	require.True(t, strings.HasSuffix(path, "_test.go"))
-	return path[:len(path)-len("_test.go")]
+	return SrcSkipRemoveExtension(t, 1)
 }
 
 // SrcPathRemoveExtension removes extension from source file path in test context
 // Gets source file path without .go extension
 //
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
 // SrcPathRemoveExtension 在测试上下文中从源文件路径中移除扩展名
 // 获取不带 .go 扩展名的源文件路径
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcPathRemoveExtension(t *testing.T) string {
-	_, path, _, ok := runtime.Caller(1)
-	require.True(t, ok)
-	require.True(t, strings.HasSuffix(path, "_test.go"))
-	return path[:len(path)-len("_test.go")]
+	return SrcSkipRemoveExtension(t, 1)
 }
 
-// SrcSkipRemoveExtension removes the _test.go suffix with specified frame skip count
-//
-// WARNING: DO NOT restructure — invoke runtime.Caller right here, not via an intermediate function.
-//
-// SrcSkipRemoveExtension 返回指定调用帧跳过的去除 _test.go 后缀的源文件路径
-//
-// 警告：不要重构——runtime.Caller 必须在此处直接调用，不能通过任何包装函数。
 func SrcSkipRemoveExtension(t *testing.T, skip int) string {
 	_, path, _, ok := runtime.Caller(1 + skip)
 	require.True(t, ok)                                  // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
