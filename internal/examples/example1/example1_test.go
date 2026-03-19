@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestValidCase verifies that NewValidCase (using filepath.Dir(runpath.Skip(1)))
+// TestValidCase verifies that NewValidCase (using filepath.Dir(locate.Skip(1)))
 // returns the correct absolute path of this package at init time.
 //
-// TestValidCase 验证 NewValidCase（使用 filepath.Dir(runpath.Skip(1))）
+// TestValidCase 验证 NewValidCase（使用 filepath.Dir(locate.Skip(1))）
 // 在包级初始化时返回本包的正确绝对路径。
 func TestValidCase(t *testing.T) {
 	t.Log("Path:", ValidCase.Path)
@@ -20,12 +20,14 @@ func TestValidCase(t *testing.T) {
 	require.Equal(t, "example1", ValidCase.Name)
 }
 
-// TestWrongCase demonstrates that NewWrongCase (using runpath.PARENT.Skip(1))
+// TestWrongCase demonstrates that NewWrongCase (using locate.PARENT.Skip(1))
 // returns the WRONG path at init time, because the method invocation consumes one extra
 // stack frame that the shallow init stack cannot accommodate.
+// locate.PARENT.Skip replicates the exact same issue runpath.PARENT.Skip had without mustAbsPath.
 //
-// TestWrongCase 演示 NewWrongCase（使用 runpath.PARENT.Skip(1)）
+// TestWrongCase 演示 NewWrongCase（使用 locate.PARENT.Skip(1)）
 // 在包级初始化时返回错误的路径，因为方法调用多消耗一帧，而浅栈承受不起。
+// locate.PARENT.Skip 复刻了 runpath.PARENT.Skip 在没有 mustAbsPath 时的完全相同的问题。
 func TestWrongCase(t *testing.T) {
 	// WrongCase.Path is WRONG here — it returns "." instead of the absolute path,
 	// because PARENT.Skip(1) cannot reach the correct frame in shallow init stacks.

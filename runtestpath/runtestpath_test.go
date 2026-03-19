@@ -41,7 +41,7 @@ func TestSrcPathChangeExtension(t *testing.T) {
 	require.True(t, strings.HasSuffix(path, "runpath/runtestpath/runtestpath.json"))
 }
 
-// TestSrcRex tests the SrcRex alias for changing source file extension
+// TestSrcRex tests the SrcRex name used to change source file extension
 // TestSrcRex 测试 SrcRex 别名用于更改源文件扩展名
 func TestSrcRex(t *testing.T) {
 	path := SrcRex(t, ".json")
@@ -73,19 +73,19 @@ func TestSrcSkipRemoveExtension(t *testing.T) {
 	require.True(t, strings.HasSuffix(path, "runpath/runtestpath/runtestpath"))
 }
 
-// TestAbsPath tests filepath.Abs function behavior
-// This method works but may return project root in some cases
+// TestAbsPath tests filepath.Abs function outcome
+// This method works but might give the project root in some cases
 //
 // TestAbsPath 测试 filepath.Abs 函数行为
 // 这个方法可行但在某些情况下可能返回项目根目录
 func TestAbsPath(t *testing.T) {
 	path, err := filepath.Abs(".")
 	require.NoError(t, err)
-	t.Log(path) // May return different results depending on context // 根据上下文可能返回不同结果
+	t.Log(path) // Might give different results depending on context // 根据上下文可能返回不同结果
 }
 
-// TestOsGetWD tests os.Getwd function behavior
-// Returns working DIR which may differ from source file location
+// TestOsGetWD tests os.Getwd function outcome
+// Returns working DIR which might not match the source file location
 //
 // TestOsGetWD 测试 os.Getwd 函数行为
 // 返回工作 DIR 可能与源文件位置不同

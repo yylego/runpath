@@ -1,8 +1,8 @@
-// Package runtestpath: Test-specific runtime path utilities for source file discovery
+// Package runtestpath: Test-specific runtime path utilities used in source file finding
 // Enables finding source files from test files during test execution
 // To get test file path, use runpath.Path() instead
 // This package specializes in finding source files being tested
-// Each function requires *testing.T to indicate test-exclusive usage
+// Each function takes *testing.T to indicate test-exclusive usage
 //
 // runtestpath: 测试专用运行时路径工具，用于源文件发现
 // 在测试执行期间从测试文件中查找源文件
@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/yylego/runpath/internal/utils"
 )
 
 // SrcPath returns the source file path corresponding to the test file
@@ -53,7 +54,7 @@ func SrcSkip(t *testing.T, skip int) string {
 	_, path, _, ok := runtime.Caller(1 + skip)           // +1 to account this function frame // 这里又调用了一层因此这里得补1次
 	require.True(t, ok)                                  // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
 	require.True(t, strings.HasSuffix(path, "_test.go")) // Must be a test file // 验证这是一个测试文件
-	return path[:len(path)-len("_test.go")] + ".go"      // Convert _test.go to .go // 将 _test.go 转换为 .go
+	return utils.MustAbsPath(path[:len(path)-len("_test.go")] + ".go") // Convert _test.go to .go // 将 _test.go 转换为 .go
 }
 
 // SrcPathChangeExtension changes the source file extension from test context
@@ -64,16 +65,16 @@ func SrcSkip(t *testing.T, skip int) string {
 // 如果测试文件是 abc_test.go 且传递 ".json"，返回 /aa/bb/cc/abc.json
 // 获取与被测试源文件同名的配置文件
 func SrcPathChangeExtension(t *testing.T, pointExtension string) string {
-	return SrcSkipRemoveExtension(t, 1) + pointExtension
+	return utils.MustAbsPath(SrcSkipRemoveExtension(t, 1) + pointExtension)
 }
 
-// SrcRex is a concise alias of SrcPathChangeExtension
+// SrcRex is a concise name of SrcPathChangeExtension
 // Changes source file extension with new one from test context
 //
 // SrcRex 是 SrcPathChangeExtension 的简短别名
 // 从测试上下文中更改源文件扩展名
 func SrcRex(t *testing.T, pointExtension string) string {
-	return SrcSkipRemoveExtension(t, 1) + pointExtension
+	return utils.MustAbsPath(SrcSkipRemoveExtension(t, 1) + pointExtension)
 }
 
 // SrcNox returns source file path without extension from test context
@@ -82,7 +83,7 @@ func SrcRex(t *testing.T, pointExtension string) string {
 // SrcNox 从测试上下文中返回不带扩展名的源文件路径
 // 从与测试文件对应的源文件中移除扩展名
 func SrcNox(t *testing.T) string {
-	return SrcSkipRemoveExtension(t, 1)
+	return utils.MustAbsPath(SrcSkipRemoveExtension(t, 1))
 }
 
 // SrcPathRemoveExtension removes extension from source file path in test context
@@ -91,12 +92,12 @@ func SrcNox(t *testing.T) string {
 // SrcPathRemoveExtension 在测试上下文中从源文件路径中移除扩展名
 // 获取不带 .go 扩展名的源文件路径
 func SrcPathRemoveExtension(t *testing.T) string {
-	return SrcSkipRemoveExtension(t, 1)
+	return utils.MustAbsPath(SrcSkipRemoveExtension(t, 1))
 }
 
 func SrcSkipRemoveExtension(t *testing.T, skip int) string {
 	_, path, _, ok := runtime.Caller(1 + skip)
 	require.True(t, ok)                                  // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
 	require.True(t, strings.HasSuffix(path, "_test.go")) // Must be a test file // 验证这是一个测试文件
-	return path[:len(path)-len("_test.go")]              // Remove _test.go suffix // 移除 _test.go 后缀
+	return utils.MustAbsPath(path[:len(path)-len("_test.go")]) // Remove _test.go suffix // 移除 _test.go 后缀
 }
