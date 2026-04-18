@@ -79,7 +79,7 @@ func Name() string {
 func Skip(skip int) string {
 	_, path, _, ok := runtime.Caller(1 + skip) // +1 to account this function frame // 这里又调用了一层因此这里得补1次
 	if !ok {
-		panic(errors.New("wrong")) // 因为在99%的场景下都是不会出错的，而且跟获取代码路径相关的逻辑，通常也不会用在线上环境，因此直接 panic
+		panic(errors.Errorf("RUNTIME CALLER FAILED AT SKIP DEPTH %d", 1+skip)) // 因为在99%的场景下都是不会出错的，而且跟获取代码路径相关的逻辑，通常也不会用在线上环境，因此直接 panic
 	}
 	return utils.MustAbsPath(path)
 }
@@ -91,7 +91,7 @@ func Skip(skip int) string {
 // This function is the backbone of dynamic config file loading
 //
 // GetPathChangeExtension 把当前源码的文件路径去除结尾.go，再增加新的结尾
-// 可以增加 ".xxx.yyy.zzz" 等任意扩展名
+// 可以增加 ".xxx.qqq.zzz" 等任意扩展名
 // 常见用途：在 config.go 里获取 config.json 的路径来读取配置
 // 可以增加 ".json"、"_dev.json"、"_uat.json" 用于不同环境
 // 这个函数对动态配置文件加载非常重要
@@ -132,11 +132,11 @@ func GetPathRemoveExtension() string {
 func GetSkipRemoveExtension(skip int) string {
 	_, path, _, ok := runtime.Caller(1 + skip)
 	if !ok {
-		panic(errors.New("wrong")) // 因为在99%的场景下都是不会出错的，而且跟获取代码路径相关的逻辑，通常也不会用在线上环境，因此直接 panic
+		panic(errors.Errorf("RUNTIME CALLER FAILED AT SKIP DEPTH %d", 1+skip)) // 因为在99%的场景下都是不会出错的，而且跟获取代码路径相关的逻辑，通常也不会用在线上环境，因此直接 panic
 	}
 	const extension = ".go"
 	if !strings.HasSuffix(strings.ToLower(path), extension) {
-		panic(errors.Errorf("%s %s", path, extension))
+		panic(errors.Errorf("EXPECTED %s EXTENSION BUT GOT PATH %s", extension, path))
 	}
 	return utils.MustAbsPath(path[:len(path)-len(extension)])
 }

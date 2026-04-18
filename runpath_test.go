@@ -127,3 +127,19 @@ func TestOsGetWD(t *testing.T) {
 	require.NoError(t, err)
 	t.Log(path) // Working DIR path // 工作 DIR 路径
 }
+
+// TestSkip_PanicOnDeepSkip tests that Skip panics when skip depth exceeds stack
+// TestSkip_PanicOnDeepSkip 测试当跳过深度超出栈帧时 Skip 会 panic
+func TestSkip_PanicOnDeepSkip(t *testing.T) {
+	require.Panics(t, func() {
+		Skip(9999)
+	})
+}
+
+// TestGetSkipRemoveExtension_PanicOnDeepSkip tests panic on excessive skip depth
+// TestGetSkipRemoveExtension_PanicOnDeepSkip 测试跳过深度过大时 panic
+func TestGetSkipRemoveExtension_PanicOnDeepSkip(t *testing.T) {
+	require.Panics(t, func() {
+		GetSkipRemoveExtension(9999)
+	})
+}

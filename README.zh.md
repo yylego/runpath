@@ -12,9 +12,11 @@
 ---
 
 <!-- TEMPLATE (ZH) BEGIN: LANGUAGE NAVIGATION -->
+
 ## 英文文档
 
 [ENGLISH README](README.md)
+
 <!-- TEMPLATE (ZH) END: LANGUAGE NAVIGATION -->
 
 ## 安装
@@ -43,19 +45,22 @@ go get github.com/yylego/runpath
 ## 核心 API 概览
 
 **路径操作：**
+
 - `Path()`, `Current()`, `CurrentPath()` - 获取当前源文件绝对路径
-- `Name()`, `CurrentName()` - 获取当前源文件名称  
+- `Name()`, `CurrentName()` - 获取当前源文件名称
 - `Skip(skip int)` - 跳过指定层级获取调用者路径
 - `GetPathChangeExtension()`, `GetRex()` - 更改文件扩展名
 - `GetPathRemoveExtension()`, `GetNox()` - 移除 .go 扩展名
 
 **DIR 操作：**
+
 - `PARENT.Path()`, `DIR.Path()` - 获取父 DIR 路径
 - `PARENT.Join()`, `DIR.Join()` - 拼接路径
 - `PARENT.Up()`, `DIR.UpTo()` - 向上导航 DIR 结构
 
 **测试工具 (runtestpath)：**
-- `SrcPath(t)` - 获取被测试源文件路径（从 _test.go 得到对应 .go 文件）
+
+- `SrcPath(t)` - 获取被测试源文件路径（从 \_test.go 得到对应 .go 文件）
 - `SrcName(t)` - 获取被测试源文件名称
 - `SrcPathChangeExtension(t, ext)` - 更改被测试文件扩展名
 

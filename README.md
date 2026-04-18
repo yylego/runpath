@@ -12,9 +12,11 @@
 ---
 
 <!-- TEMPLATE (EN) BEGIN: LANGUAGE NAVIGATION -->
+
 ## CHINESE README
 
 [中文说明](README.zh.md)
+
 <!-- TEMPLATE (EN) END: LANGUAGE NAVIGATION -->
 
 ## Installation
@@ -43,26 +45,29 @@ Unlike the built-in `filepath.Abs(".")` which doesn't always provide the expecte
 ## Core API Overview
 
 **Path Operations:**
+
 - `Path()`, `Current()`, `CurrentPath()` - Get current source file absolute path
-- `Name()`, `CurrentName()` - Get current source file name  
+- `Name()`, `CurrentName()` - Get current source file name
 - `Skip(skip int)` - Skip specified levels to get caller path
 - `GetPathChangeExtension()`, `GetRex()` - Change file extension
 - `GetPathRemoveExtension()`, `GetNox()` - Remove .go extension
 
 **DIR Operations:**
+
 - `PARENT.Path()`, `DIR.Path()` - Get parent DIR path
 - `PARENT.Join()`, `DIR.Join()` - Join paths
 - `PARENT.Up()`, `DIR.UpTo()` - Navigate up DIR structure
 
 **Test Utilities (runtestpath):**
-- `SrcPath(t)` - Get tested source file path (from _test.go to corresponding .go file)
+
+- `SrcPath(t)` - Get tested source file path (from \_test.go to corresponding .go file)
 - `SrcName(t)` - Get tested source file name
 - `SrcPathChangeExtension(t, ext)` - Change tested file extension
 
 ## Common Use Cases
 
 - **Dynamic Config File Paths** - Read config.json from config.go dynamically
-- **Test Code Generation** - Locate source files when generating code in tests  
+- **Test Code Generation** - Locate source files when generating code in tests
 - **Accurate Execution Paths** - More reliable than `filepath.Abs(".")` for execution location
 
 ## Example Usage

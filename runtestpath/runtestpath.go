@@ -51,9 +51,9 @@ func SrcName(t *testing.T) string {
 // 目前除了上述两个场景外使用场景有限
 // 导出以防有其他外部用途
 func SrcSkip(t *testing.T, skip int) string {
-	_, path, _, ok := runtime.Caller(1 + skip)           // +1 to account this function frame // 这里又调用了一层因此这里得补1次
-	require.True(t, ok)                                  // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
-	require.True(t, strings.HasSuffix(path, "_test.go")) // Must be a test file // 验证这是一个测试文件
+	_, path, _, ok := runtime.Caller(1 + skip)                         // +1 to account this function frame // 这里又调用了一层因此这里得补1次
+	require.True(t, ok)                                                // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
+	require.True(t, strings.HasSuffix(path, "_test.go"))               // Must be a test file // 验证这是一个测试文件
 	return utils.MustAbsPath(path[:len(path)-len("_test.go")] + ".go") // Convert _test.go to .go // 将 _test.go 转换为 .go
 }
 
@@ -95,9 +95,12 @@ func SrcPathRemoveExtension(t *testing.T) string {
 	return utils.MustAbsPath(SrcSkipRemoveExtension(t, 1))
 }
 
+// SrcSkipRemoveExtension removes extension from source file path with specified frame skip count
+//
+// SrcSkipRemoveExtension 返回指定调用帧跳过的去除扩展名的源文件路径
 func SrcSkipRemoveExtension(t *testing.T, skip int) string {
 	_, path, _, ok := runtime.Caller(1 + skip)
-	require.True(t, ok)                                  // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
-	require.True(t, strings.HasSuffix(path, "_test.go")) // Must be a test file // 验证这是一个测试文件
+	require.True(t, ok)                                        // Ensure runtime.Caller succeeds // 确保 runtime.Caller 成功
+	require.True(t, strings.HasSuffix(path, "_test.go"))       // Must be a test file // 验证这是一个测试文件
 	return utils.MustAbsPath(path[:len(path)-len("_test.go")]) // Remove _test.go suffix // 移除 _test.go 后缀
 }
