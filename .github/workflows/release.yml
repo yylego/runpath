@@ -111,7 +111,7 @@ jobs:
 
       # 2. 创建 Release 和上传源码包
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
         env:
